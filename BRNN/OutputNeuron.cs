@@ -1,36 +1,39 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace BRNN
 {
     public class OutputNeuron : Neuron
     {
-        Neuron[] inputs;
-        int[] dataNeededCount;
-        int inputIndex;
+        protected List<Neuron> inputNeurons;
 
-        public OutputNeuron(Func<double, double> activationFunction, int inputsCount, int stepsCount = 1) : base(activationFunction, inputsCount, stepsCount)
+        public OutputNeuron() : base()
         {
-            inputs = new Neuron[inputsCount];
-            dataNeededCount = new int[stepsCount];
+            inputNeurons = new List<Neuron>();
+            Network.AddOutputNeuron(this);
         }
 
         public override void SetInput(Neuron input)
         {
-            inputs[inputIndex++] = input;
+            inputNeurons.Add(input);
+            if (inputNeurons.Count > inputWeights.Count)
+                inputWeights.Add(random.NextDouble());
         }
 
-        public override void Activate(int step)
+        protected virtual void AggregateValues(int epochNumber)
         {
-            dataNeededCount[step]--;
-            if (dataNeededCount[step] > 0) // jeśli do neuronu nie dotarły jeszcze wszystkie niezbędne informacje
-                return;
-            for (int i = 0; i < inputs.Length; i++)
+            for (int i = 0; i < inputNeurons.Count; i++)
             {
-                values[step] += inputs[i].GetValue(step) * inputWeights[i];
+                values[epochNumber] += inputNeurons[i].GetValue(epochNumber) * inputWeights[i];
             }
-            values[step] = activationFunction(values[step]);
-            if (step == values.Length)
-                step = 0;
+        }
+
+        public override void Activate(int epochNumber)
+        {
+            base.Activate(epochNumber);
+            if (!IsNeuronReady(epochNumber))
+                return;
+            AggregateValues(epochNumber);
+            ExecuteActivationFunction(epochNumber);
         }
     }
 }

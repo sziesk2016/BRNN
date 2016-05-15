@@ -1,36 +1,51 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace BRNN
 {
     public class InputNeuron : Neuron
     {
-        Neuron[] outputs;
-        double[,] inputValues;
-        int outputIndex;
+        List<Neuron> outputNeurons;
+        double[] inputVector;
 
-        public InputNeuron(Func<double, double> activationFunction, int outputsCount, int inputsCount, double[,] inputValues, int stepsCount = 1) : base(activationFunction, inputsCount, stepsCount)
+        public InputNeuron() : base()
         {
-            outputs = new Neuron[outputsCount];
-            this.inputValues = inputValues;
+            outputNeurons = new List<Neuron>();
+            Network.AddInputNeuron(this);
+        }
+
+        public void SetInputVector(double[] inputVector)
+        {
+            this.inputVector = inputVector;
         }
 
         public void SetOutput(Neuron output)
         {
-            outputs[outputIndex++] = output;
+            outputNeurons.Add(output);
             output.SetInput(this);
         }
 
-        public override void Activate(int step)
+        private void AggregateValues(int epochNumber)
         {
-            for (int i = 0; i < inputWeights.Length; i++)
+            for (int i = 0; i < inputVector.Length; i++)
             {
-                values[step] += inputValues[step, i] * inputWeights[i];
+                values[epochNumber] += inputVector[i] * inputWeights[i];
             }
-            values[step] = activationFunction(values[step]);
-            for (int i = 0; i < outputs.Length; i++)
+        }
+
+        private void PropagateSignal(int epochNumber)
+        {
+            for (int i = 0; i < outputNeurons.Count; i++)
             {
-                outputs[i].Activate(step);
+                outputNeurons[i].Activate(epochNumber);
             }
+        }
+
+        public override void Activate(int epochNumber)
+        {
+            base.Activate(epochNumber);
+            AggregateValues(epochNumber);
+            ExecuteActivationFunction(epochNumber);
+            PropagateSignal(epochNumber);
         }
     }
 }

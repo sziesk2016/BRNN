@@ -1,30 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BRNN
 {
     public abstract class Neuron
     {
-        protected Func<double, double> activationFunction; // delegacja na funkcję aktywacji
-        protected double[] values, inputWeights; // values - wartości neuronu w poszczególnych krokach, inputWeights - wagi na wejściu
+        protected List<double> values, inputWeights;
+        protected Random random;
+        protected double bias;
+        List<int> dataNeededCount;
 
-        public Neuron(Func<double, double> activationFunction, int inputsCount, int stepsCount)
+        public Neuron()
         {
-            this.activationFunction = activationFunction;
-            values = new double[stepsCount];
-            inputWeights = new double[inputsCount];
+            dataNeededCount = new List<int>();
+            values = new List<double>();
+            inputWeights = new List<double>();
+            random = new Random();
+            if (Network.NeuronsHaveBias)
+                bias = random.NextDouble();
         }
 
-        public double GetValue(int step)
+        public void SetBias(double value)
         {
-            return values[step];
+            bias = value;
+        }
+
+        public double GetValue(int epochNumber)
+        {
+            return values[epochNumber];
         }
 
         public void SetInputWeight(int index, double weight)
         {
+            if (index == inputWeights.Count)
+                inputWeights.Add(weight);
             inputWeights[index] = weight;
         }
 
-        public abstract void Activate(int step);
+        protected bool IsNeuronReady(int epochNumber)
+        {
+            if (epochNumber == dataNeededCount.Count)
+                dataNeededCount.Add(inputWeights.Count);
+            dataNeededCount[epochNumber]--;
+            return dataNeededCount[epochNumber] == 0;
+        }
+
+        protected void ExecuteActivationFunction(int epochNumber)
+        {
+            values[epochNumber] = Network.ActivationFunction(values[epochNumber]);
+        }
+
+        public virtual void Activate(int epochNumber)
+        {
+            if (epochNumber == values.Count)
+                values.Add(0.0);
+        }
 
         public virtual void SetInput(Neuron input)
         {
