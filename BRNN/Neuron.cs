@@ -5,14 +5,16 @@ namespace BRNN
 {
     public abstract class Neuron
     {
+        protected List<bool> wasActivated;
         protected List<double> values, inputWeights;
         protected Random random;
-        protected double bias;
-        List<int> dataNeededCount;
+        protected double bias;        
+        protected List<int> dataNeededCount;
 
         public Neuron()
         {
             dataNeededCount = new List<int>();
+            wasActivated = new List<bool>();
             values = new List<double>();
             inputWeights = new List<double>();
             random = new Random();
@@ -45,6 +47,7 @@ namespace BRNN
             return dataNeededCount[epochNumber] == 0;
         }
 
+
         protected void ExecuteActivationFunction(int epochNumber)
         {
             values[epochNumber] = Network.ActivationFunction(values[epochNumber]);
@@ -53,7 +56,10 @@ namespace BRNN
         public virtual void Activate(int epochNumber)
         {
             if (epochNumber == values.Count)
+            {
                 values.Add(0.0);
+                wasActivated.Add(false);
+            }
         }
 
         public virtual void SetInput(Neuron input)

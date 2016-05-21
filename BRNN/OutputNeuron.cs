@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BRNN
 {
@@ -30,8 +31,11 @@ namespace BRNN
         public override void Activate(int epochNumber)
         {
             base.Activate(epochNumber);
+            if (wasActivated[epochNumber])
+                return;
             if (!IsNeuronReady(epochNumber))
                 return;
+            wasActivated[epochNumber] = true;
             AggregateValues(epochNumber);
             ExecuteActivationFunction(epochNumber);
         }

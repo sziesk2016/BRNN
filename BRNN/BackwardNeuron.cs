@@ -2,12 +2,12 @@
 
 namespace BRNN
 {
-    public class ForwardNeuron : OutputNeuron
+    public class BackwardNeuron : OutputNeuron
     {
         List<Neuron> outputNeurons;
         double[] recurrentWeights;
 
-        public ForwardNeuron()
+        public BackwardNeuron()
         {
             outputNeurons = new List<Neuron>();
             inputNeurons = new List<Neuron>();
@@ -27,15 +27,15 @@ namespace BRNN
             recurrentWeights[index] = value;
         }
 
-        private double GetRecurrentValue(int epochNumber) // możliwa optymalizacja
+        private double GetRecurrentValue(int epochNumber)
         {
             double value = 0.0;
             int currentWeightIndex = 0;
-            for (int i = Network.RecurrentWindowSize; i > 0; i--)
+            for (int i = 1; i <= recurrentWeights.Length; i++)
             {
-                int index = epochNumber - i;
-                if (index < 0)
-                    continue;
+                int index = epochNumber + i;
+                if (index == Network.EpochCount)
+                    return value;
                 value += values[index] * recurrentWeights[currentWeightIndex++];
             }
             return value;
@@ -55,6 +55,16 @@ namespace BRNN
             }
         }
 
+        private bool IsLastEpoch(int epochNumber)
+        {
+            return epochNumber == Network.EpochCount - 1;
+        }
+
+        private void ResetDataNeededCount(int epochNumber)
+        {
+            dataNeededCount[epochNumber] = inputWeights.Count;
+        }
+
         public override void Activate(int epochNumber)
         {
             base.Activate(epochNumber);
@@ -62,6 +72,11 @@ namespace BRNN
                 return;
             if (!IsNeuronReady(epochNumber))
                 return;
+            if (!IsLastEpoch(epochNumber) && !Network.IsBackPropagation)
+            {
+                ResetDataNeededCount(epochNumber);
+                return;
+            }
             wasActivated[epochNumber] = true;
             AggregateValues(epochNumber);
             ExecuteActivationFunction(epochNumber);

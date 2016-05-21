@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackwardNeuron.cs" />
     <Compile Include="InputNeuron.cs" />
     <Compile Include="ForwardNeuron.cs" />
     <Compile Include="Network.cs" />

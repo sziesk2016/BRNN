@@ -8,6 +8,8 @@ namespace BRNN
         public static Func<double, double> ActivationFunction { get; set; }
         public static int RecurrentWindowSize { get; set; }
         public static bool NeuronsHaveBias { get; set; }
+        public static int EpochCount { get; set; }
+        public static bool IsBackPropagation { get; private set; }
         private static List<InputNeuron> inputNeurons;
         private static List<OutputNeuron> outputNeurons;
 
@@ -15,7 +17,9 @@ namespace BRNN
         {
             ActivationFunction = DefaultActivationFunction;
             RecurrentWindowSize = 1;
+            EpochCount = 0;
             NeuronsHaveBias = false;
+            IsBackPropagation = false;
             inputNeurons = new List<InputNeuron>();
             outputNeurons = new List<OutputNeuron>();
         }

@@ -48,8 +48,11 @@ namespace BRNN
             i1.SetOutput(o1);
             i2.SetOutput(o1);
 
+            // Podajemy liczbę epok
+            Network.EpochCount = 4;
+
             // Przechodzimy przez wszystkie cztery epoki
-            for (int epochNumber = 0; epochNumber < 4; epochNumber++)
+            for (int epochNumber = 0; epochNumber < Network.EpochCount; epochNumber++)
             {
                 // Podajemy do neuronów wejściowych wektory wejściowe
                 i1.SetInputVector(values[epochNumber]);
@@ -61,6 +64,9 @@ namespace BRNN
                 // W warstwie wyjściowej mamy tylko jeden neuron, a więc długość wektora wyjściowego wynosi tylko 1. Wyświetlamy pierwszy element wektora.
                 Console.WriteLine(valuesVector[0].ToString());
             }
+
+            // W sieci BRNN wymagana byłaby jeszcze na koniec aktywacja zaczynając od przedostatniej epoki w kierunku pierwszej po to by móc uzyskać wartości z przyszłości
+            // Należy również zaznaczyć w sieci że dotyczy to wstecznej propagacji
         }
 
         static void Main(string[] args)
