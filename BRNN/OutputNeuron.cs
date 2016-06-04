@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BRNN
 {
@@ -8,6 +8,16 @@ namespace BRNN
         protected List<Neuron> inputNeurons;
 
         public OutputNeuron() : base()
+        {
+            Initialize();
+        }
+
+        public OutputNeuron(string name) : base(name)
+        {
+            Initialize();
+        }
+
+        private void Initialize()
         {
             inputNeurons = new List<Neuron>();
             Network.AddOutputNeuron(this);
@@ -26,10 +36,14 @@ namespace BRNN
             {
                 values[epochNumber] += inputNeurons[i].GetValue(epochNumber) * inputWeights[i];
             }
+            values[epochNumber] += bias;
+            Debug.WriteLine("=== Neuron '" + name + "', epoch = " + epochNumber + " ===");
+            Debug.WriteLine("Aggregated value: " + values[epochNumber]);
         }
 
         public override void Activate(int epochNumber)
         {
+            Debug.WriteLine("BIAS: " + bias);
             base.Activate(epochNumber);
             if (wasActivated[epochNumber])
                 return;

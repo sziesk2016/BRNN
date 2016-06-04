@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BRNN
 {
@@ -9,6 +10,16 @@ namespace BRNN
 
         public InputNeuron() : base()
         {
+            Initialize();
+        }
+
+        public InputNeuron(string name) : base(name)
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             outputNeurons = new List<Neuron>();
             Network.AddInputNeuron(this);
         }
@@ -18,7 +29,13 @@ namespace BRNN
             this.inputVector = inputVector;
         }
 
-        public void SetOutput(Neuron output)
+        public void SetOutput(params Neuron[] outputs)
+        {
+            for (int i = 0; i < outputs.Length; i++)
+                SetSingleOutput(outputs[i]);
+        }
+
+        private void SetSingleOutput(Neuron output)
         {
             outputNeurons.Add(output);
             output.SetInput(this);
@@ -30,6 +47,9 @@ namespace BRNN
             {
                 values[epochNumber] += inputVector[i] * inputWeights[i];
             }
+            values[epochNumber] += bias;
+            Debug.WriteLine("=== Neuron '" + name + "', epoch = " + epochNumber + " ===");
+            Debug.WriteLine("Aggregated value: " + values[epochNumber]);
         }
 
         private void PropagateSignal(int epochNumber)
@@ -42,6 +62,7 @@ namespace BRNN
 
         public override void Activate(int epochNumber)
         {
+            Debug.WriteLine("BIAS: " + bias);
             base.Activate(epochNumber);
             AggregateValues(epochNumber);
             ExecuteActivationFunction(epochNumber);

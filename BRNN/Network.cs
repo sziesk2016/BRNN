@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BRNN
 {
@@ -9,7 +10,7 @@ namespace BRNN
         public static int RecurrentWindowSize { get; set; }
         public static bool NeuronsHaveBias { get; set; }
         public static int EpochCount { get; set; }
-        public static bool IsBackPropagation { get; private set; }
+        public static bool IsBackPropagation { get; set; }
         private static List<InputNeuron> inputNeurons;
         private static List<OutputNeuron> outputNeurons;
 
@@ -42,8 +43,16 @@ namespace BRNN
             return values;
         }
 
+        public static void DisplayOutputValues(int epochNumber)
+        {
+            double[] values = GetOutputVector(epochNumber);
+            for (int i = 0; i < outputNeurons.Count; i++)
+                Console.WriteLine(values[i]);
+        }
+
         public static void Activate(int epochNumber)
         {
+
             for (int i = 0; i < inputNeurons.Count; i++)
                 inputNeurons[i].Activate(epochNumber);
         }
