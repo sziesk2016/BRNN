@@ -36,7 +36,8 @@ namespace BRNN
             {
                 values[epochNumber] += inputNeurons[i].GetValue(epochNumber) * inputWeights[i];
             }
-            values[epochNumber] += bias;
+            if (Network.NeuronsHaveBias)
+                values[epochNumber] += bias;
             Debug.WriteLine("=== Neuron '" + name + "', epoch = " + epochNumber + " ===");
             Debug.WriteLine("Aggregated value: " + values[epochNumber]);
         }
@@ -45,11 +46,6 @@ namespace BRNN
         {
             Debug.WriteLine("BIAS: " + bias);
             base.Activate(epochNumber);
-            if (wasActivated[epochNumber])
-                return;
-            if (!IsNeuronReady(epochNumber))
-                return;
-            wasActivated[epochNumber] = true;
             AggregateValues(epochNumber);
             ExecuteActivationFunction(epochNumber);
         }

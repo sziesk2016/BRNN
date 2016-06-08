@@ -6,7 +6,7 @@ namespace BRNN
     public class InputNeuron : Neuron
     {
         List<Neuron> outputNeurons;
-        double[] inputVector;
+        double inputValue;
 
         public InputNeuron() : base()
         {
@@ -24,9 +24,9 @@ namespace BRNN
             Network.AddInputNeuron(this);
         }
 
-        public void SetInputVector(double[] inputVector)
+        public void SetInputValue(double inputValue)
         {
-            this.inputVector = inputVector;
+            this.inputValue = inputValue;
         }
 
         public void SetOutput(params Neuron[] outputs)
@@ -43,21 +43,11 @@ namespace BRNN
 
         private void AggregateValues(int epochNumber)
         {
-            for (int i = 0; i < inputVector.Length; i++)
-            {
-                values[epochNumber] += inputVector[i] * inputWeights[i];
-            }
-            values[epochNumber] += bias;
+            values[epochNumber] += inputValue * inputWeights[0];
+            if (Network.NeuronsHaveBias)
+                values[epochNumber] += bias;
             Debug.WriteLine("=== Neuron '" + name + "', epoch = " + epochNumber + " ===");
             Debug.WriteLine("Aggregated value: " + values[epochNumber]);
-        }
-
-        private void PropagateSignal(int epochNumber)
-        {
-            for (int i = 0; i < outputNeurons.Count; i++)
-            {
-                outputNeurons[i].Activate(epochNumber);
-            }
         }
 
         public override void Activate(int epochNumber)
@@ -66,7 +56,6 @@ namespace BRNN
             base.Activate(epochNumber);
             AggregateValues(epochNumber);
             ExecuteActivationFunction(epochNumber);
-            PropagateSignal(epochNumber);
         }
     }
 }
