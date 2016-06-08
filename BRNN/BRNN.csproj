@@ -47,10 +47,11 @@
     <Compile Include="InputNeuron.cs" />
     <Compile Include="ForwardNeuron.cs" />
     <Compile Include="Network.cs" />
-    <Compile Include="Neuron.cs" />
+    <Compile Include="AbstractNeuron.cs" />
     <Compile Include="OutputNeuron.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AbstractRecurrentNeuron.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

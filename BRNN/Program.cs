@@ -12,6 +12,13 @@ namespace BRNN
             return 0;
         }
 
+        public static void DisplayOutputValues(int epochNumber)
+        {
+            double[] values = Network.GetOutputVector(epochNumber);
+            for (int i = 0; i < Network.OutputNeurons.Count; i++)
+                Console.WriteLine(values[i]);
+        }
+
         public static void BRNN()
         {
             Network.EpochCount = 3;
@@ -25,13 +32,17 @@ namespace BRNN
 
             Network.Values = values;
 
-            InputNeuron i1 = new InputNeuron("I1");
+            InputNeuron i1 = new InputNeuron();
+            i1.Name = "I1";
 
-            ForwardNeuron f1 = new ForwardNeuron("F1");
+            ForwardNeuron f1 = new ForwardNeuron();
+            f1.Name = "F1";
 
-            BackwardNeuron b1 = new BackwardNeuron("B1");
+            BackwardNeuron b1 = new BackwardNeuron();
+            b1.Name = "B1";
 
-            OutputNeuron o1 = new OutputNeuron("O1");
+            OutputNeuron o1 = new OutputNeuron();
+            o1.Name = "O1";
 
             i1.SetOutput(f1, b1);
 
@@ -63,7 +74,7 @@ namespace BRNN
 
             for (int epochNumber = 0; epochNumber < Network.EpochCount; epochNumber++)
             {
-                Network.DisplayOutputValues(epochNumber);
+                DisplayOutputValues(epochNumber);
             }
         }
 
