@@ -28,6 +28,14 @@ namespace BRNN
             BackwardNeurons = new List<BackwardNeuron>();
         }
 
+        public static void Restart()
+        {
+            InputNeurons.Clear();
+            OutputNeurons.Clear();
+            ForwardNeurons.Clear();
+            BackwardNeurons.Clear();
+        }
+
         public static double[] GetOutputVector(int epochNumber)
         {
             double[] values = new double[OutputNeurons.Count];
@@ -38,6 +46,7 @@ namespace BRNN
 
         private static void SetInputValues(int epochNumber)
         {
+            Console.WriteLine("SIZE: " + InputNeurons.Count);
             for (int i = 0; i < InputNeurons.Count; i++)
                 InputNeurons[i].SetInputValue(Values[epochNumber][i]);
         }
