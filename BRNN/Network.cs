@@ -18,7 +18,7 @@ namespace BRNN
 
         static Network()
         {
-            ActivationFunction = DefaultActivationFunction;
+            ActivationFunction = ActivationFunctionSet.DefaultActivationFunction;
             RecurrentWindowSize = 1;
             EpochCount = 0;
             NeuronsHaveBias = false;
@@ -65,11 +65,6 @@ namespace BRNN
                 ActivateNeurons(BackwardNeurons, epochNumber);
                 ActivateNeurons(OutputNeurons, epochNumber);
             }
-        }
-
-        private static double DefaultActivationFunction(double value)
-        {
-            return value;
         }
     }
 }

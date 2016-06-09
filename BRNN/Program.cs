@@ -4,14 +4,6 @@ namespace BRNN
 {
     class Program
     {
-        // Funkcja progowa
-        public static double Threshold(double value)
-        {
-            if (value >= 1)
-                return 1;
-            return 0;
-        }
-
         public static void DisplayOutputValues(int epochNumber)
         {
             double[] values = Network.GetOutputVector(epochNumber);

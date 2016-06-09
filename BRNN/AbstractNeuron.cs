@@ -7,6 +7,7 @@ namespace BRNN
     public abstract class AbstractNeuron
     {
         public string Name { get; set; }
+        public Func<double, double> ActivationFunction { get; set; }
         protected List<AbstractNeuron> inputNeurons, outputNeurons;
         protected List<double> inputWeights;
         protected double[] values;
@@ -15,6 +16,7 @@ namespace BRNN
 
         protected AbstractNeuron()
         {
+            ActivationFunction = null;
             values = new double[Network.EpochCount];
             inputWeights = new List<double>();
             random = new Random();
@@ -46,7 +48,10 @@ namespace BRNN
 
         protected void ExecuteActivationFunction(int epochNumber)
         {
-            values[epochNumber] = Network.ActivationFunction(values[epochNumber]);
+            if (ActivationFunction != null)
+                values[epochNumber] = ActivationFunction(values[epochNumber]);
+            else
+                values[epochNumber] = Network.ActivationFunction(values[epochNumber]);
             Debug.WriteLine("Activation function: " + values[epochNumber]);
         }
 
